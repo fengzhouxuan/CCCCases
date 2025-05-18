@@ -1,3 +1,4 @@
+import { URLUtil } from "./URLUtil";
 
 const { ccclass, property } = cc._decorator;
 
@@ -12,10 +13,10 @@ export class ResLoaderOption {
 export class ResLoader {
 
     public static load<T extends cc.Asset>(url: string, type: { prototype: T }): Promise<T>;
-    public static load<T extends cc.Asset>(url: string, option: ResLoaderOption): Promise<T>;
+    public static load<T extends cc.Asset>(url: string, option?: ResLoaderOption): Promise<T>;
     public static load<T extends cc.Asset>(url: string, option?: ResLoaderOption, type?: { prototype: T }): Promise<T>;
     public static load<T extends cc.Asset>(url: string, option?: ResLoaderOption | { prototype: T }, type?: { prototype: T }): Promise<T> {
-        let isRemoteUrl = this.isRemoteUrl(url);
+        let isRemoteUrl = URLUtil.isRemoteUrl(url);
         if (isRemoteUrl) {
             return this.loadRemote(url, option as ResLoaderOption) as Promise<T>;
         } else {
@@ -66,9 +67,5 @@ export class ResLoader {
                 resolve(asset);
             });
         })
-    }
-
-    private static isRemoteUrl(url: string) {
-        return url.startsWith('http') || url.startsWith('https') || url.startsWith('/');
     }
 }
